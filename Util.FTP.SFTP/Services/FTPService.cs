@@ -9,7 +9,7 @@ namespace Util.FTP.SFTP.Services
 {
     public class FTPService : IFTPService
     {
-        private readonly FtpClient _cliente;
+        private readonly IFtpClient _cliente;
 
         public FTPService(string host, NetworkCredential credenciais)
         {
@@ -24,12 +24,19 @@ namespace Util.FTP.SFTP.Services
         /// <returns> objeto do tipo FtpClient </returns>
         public FtpClient CriaCliente(string host, NetworkCredential credenciais)
         {
-            return new FtpClient(host, 
-                new NetworkCredential 
-                { 
-                    UserName = credenciais.UserName,
-                    Password = credenciais.Password 
-                });
+            try
+            {
+                return new FtpClient(host,
+            new NetworkCredential
+            {
+                UserName = credenciais.UserName,
+                Password = credenciais.Password
+            });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -40,12 +47,26 @@ namespace Util.FTP.SFTP.Services
         /// <returns></returns>
         public async Task Download(string arquivo, string destino)
         {
-            await _cliente.DownloadFileAsync(arquivo, destino, FtpLocalExists.Overwrite);
+            try
+            {
+                await _cliente.DownloadFileAsync(arquivo, destino, FtpLocalExists.Overwrite);
+            }
+            catch (Exception ex)
+            {
+                throw ex; 
+            }
         }
 
         public async Task Mover(string arquivo, string destino)
         {
-            await _cliente.MoveFileAsync(arquivo, destino, FtpRemoteExists.Overwrite);
+            try
+            {
+                await _cliente.MoveFileAsync(arquivo, destino, FtpRemoteExists.Overwrite);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -55,19 +76,26 @@ namespace Util.FTP.SFTP.Services
         /// <returns> Lista com os nomes dos arquivos </returns>
         public async Task<List<string>> RetornaArquivos(string caminho)
         {
-            List<string> arquivos = new List<string>();
-
-            FtpListItem[] listagem = await _cliente.GetListingAsync();
-
-            foreach (var item in listagem)
+            try
             {
-                if (item.Type == FtpFileSystemObjectType.File)
-                {
-                    arquivos.Add(item.FullName);
-                }
-            }
+                List<string> arquivos = new List<string>();
 
-            return arquivos;
+                FtpListItem[] listagem = await _cliente.GetListingAsync();
+
+                foreach (var item in listagem)
+                {
+                    if (item.Type == FtpFileSystemObjectType.File)
+                    {
+                        arquivos.Add(item.FullName);
+                    }
+                }
+
+                return arquivos;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -78,7 +106,14 @@ namespace Util.FTP.SFTP.Services
         /// <returns></returns>
         public async Task Upload(string arquivo, string destino)
         {
-            await _cliente.UploadFileAsync(arquivo, destino, FtpRemoteExists.Overwrite);
+            try
+            {
+                await _cliente.UploadFileAsync(arquivo, destino, FtpRemoteExists.Overwrite);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
