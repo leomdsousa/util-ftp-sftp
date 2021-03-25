@@ -7,7 +7,7 @@ namespace Util.FTP.SFTP.Services.Interfaces
 {
     public interface ISFTPService
     {
-        SftpClient CriaCliente(string host, string username, string password);
+        SftpClient CriaCliente(string host, int port, string username, string password);
         Task<List<SftpFile>> RetornaArquivos(string caminho);
         Task Download(string caminho, string destino);
         Task Upload(string caminho, string destino);
